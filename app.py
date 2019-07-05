@@ -2,7 +2,10 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
+from api import ambrosia_api
+
 app = Flask(__name__)
+app.register_blueprint(ambrosia_api, url_prefix='/api/v1')
 CORS(app)
 
 @app.route('/')

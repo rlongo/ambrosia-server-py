@@ -5,7 +5,7 @@ WORKDIR /srv/flask_app
 
 RUN apt clean && \
     apt update && \
-    apt install -y --no-install-recommends nginx python3-dev build-essential libpq-dev  && \
+    apt install -y --no-install-recommends nginx python3-dev build-essential && \
     pip install -r requirements.txt --src /usr/local/src
 
 COPY nginx.conf /etc/nginx

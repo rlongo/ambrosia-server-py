@@ -2,7 +2,7 @@ from api.storage import AmbrosiaStorage
 from api.recipe import Recipe
 
 
-def get_recipes(storage, headers_only, tags):
+def get_recipes(storage, tags):
     assert isinstance(storage, AmbrosiaStorage)
     return storage.get_recipe_headers(tags)
 

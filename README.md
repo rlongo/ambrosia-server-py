@@ -16,7 +16,7 @@ The app can be run from the dockerfile. You just need to configure the following
 
 | Endpoint | Method | Summary |
 |---|---|---|
-| `/recipes?headers_only=true&tag=t1` | `GET` | Gets all recipes in the DB. Options to set tags to filter (any number) and whether you only want to return headers. |
+| `/recipes?tag=t1` | `GET` | Gets all recipes in the DB. Options to set tags to filter (any number). |
 | `/recipes` | `POST` | Bulk inserts full recipes. |
 
 # Single Recipes

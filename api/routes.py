@@ -25,10 +25,9 @@ def handle_unknown_errors(err):
 
 @ambrosia_api.route('/recipes')
 def get_recipes():
-    headers_only = request.args.get('headers_only', default=True)
     tags = request.args.getlist('tag')
 
-    data = api.handlers.get_recipes(storage, headers_only, tags)
+    data = api.handlers.get_recipes(storage, tags)
     return jsonify(data)
 
 

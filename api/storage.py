@@ -12,6 +12,7 @@ class AmbrosiaStorage:
         self.collection = self.db.recipes
 
     def create_new_recipe(self, recipe):
+        recipe['_id'] = recipe['rid']
         return self.collection.insert_one(recipe).inserted_id
 
     @staticmethod
@@ -25,6 +26,7 @@ class AmbrosiaStorage:
         tag_filter = AmbrosiaStorage._get_tags_query(tags)
         print(tag_filter)
         for h in self.collection.find(tag_filter):
+            h.pop('_id', None)
             headers.append(h)
 
         return headers

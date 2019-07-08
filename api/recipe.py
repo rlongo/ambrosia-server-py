@@ -9,24 +9,28 @@ class Recipe:
     @staticmethod
     def sanitize_header(recipe_header):
         """Sanitizes the input json for a recipe header
-        >>> Recipe.sanitize_header({'name': 'Marias Cake', 'tags': ['a', 'F', 'a'], 'author': 'a', 'notes': 'n'})[1]
-        {'name': 'Marias Cake', 'tags': ['a', 'f', 'marias_cake'], 'author': 'a', 'notes': 'n', '_id': 'marias_cake'}
+        >>> Recipe.sanitize_header({'go': 'go', 'name': 'Marias Cake', 'tags': ['a', 'F', 'a'], 'author': 'a', 'notes': 'n'})[1]
+        {'rid': 'marias_cake', 'name': 'Marias Cake', 'tags': ['a', 'f', 'marias_cake'], 'author': 'a', 'notes': 'n'}
         """
+        header = dict()
+
         recipe_name = recipe_header['name']
-        tags = recipe_header['tags']
+        tags = recipe_header['tags'] or []
 
         assert len(recipe_name) > 0
-        if tags is None:
-            tags = []
 
         recipe_tag_name = Recipe.make_tag(recipe_name)
         tags.append(recipe_tag_name)
 
         rid = Recipe.make_id(recipe_name)
-        recipe_header['_id'] = rid
-        recipe_header['tags'] = Recipe.sanitize_tags(tags)
 
-        return rid, recipe_header
+        header['rid'] = rid
+        header['name'] = recipe_name
+        header['tags'] = Recipe.sanitize_tags(tags)
+        header['author'] = recipe_header['author'] or ''
+        header['notes'] = recipe_header['notes'] or ''
+
+        return rid, header
 
     @staticmethod
     def sanitize_tags(tags):

@@ -1,8 +1,39 @@
-from flask import Blueprint, jsonify, abort
+from flask import Blueprint, jsonify, abort, request
+from api.storage import AmbrosiaStorage
+import api.handlers
+
+import logging
+from logging import Formatter
+LOGGER = logging.getLogger('ambrosia-logger')
+handler = logging.StreamHandler()
+handler.setFormatter(Formatter(
+    '%(asctime)s %(levelname)s: %(message)s '
+    '[in %(pathname)s:%(lineno)d]'
+))
+LOGGER.addHandler(handler)
+LOGGER.setLevel(logging.INFO)
 
 ambrosia_api = Blueprint('ambrosia_api', __name__)
+storage = AmbrosiaStorage('mongodb://localhost:27017/', 'ambrosia', 'recipes')
+
+@ambrosia_api.errorhandler(Exception)
+def handle_unknown_errors(err):
+    data = { 'error': str(err) }
+    return jsonify(data)
 
 @ambrosia_api.route('/recipes')
 def get_recipes():
-    s = [{"_id":"571d4a71-9950-11e9-9445-02420aff0021","name":"Eggnog","author":"How To Drink","rating":7,"notes":"https://www.youtube.com/watch?v=HYqXJWOZybY","tags":["eggnog","howtodrink","iced","christmas","bourbon","cognac","alcohol","drink"],"stages":[{"name":"Mixing","notes":"Preparation for the mixed portion of the drink.","ingredients":[{"name":"egg","unit":"","quantity":1},{"name":"bourbon","unit":"oz","quantity":2},{"name":"cognac","unit":"oz","quantity":0.5},{"name":"luxardo maraschino","unit":"oz","quantity":0.5},{"name":"simple syrup","unit":"oz","quantity":0.5}],"steps":["Mix the ingredients and shake until emulsified.","Add ice and continue shaking until chilled.","Strain into a glass."]},{"name":"Serving Instructions","notes":"","ingredients":[{"name":"grated nutmeg","unit":"","quantity":0},{"name":"grated orange peel","unit":"","quantity":0},{"name":"maraschino cherries","unit":"","quantity":0},{"name":"milk","unit":"oz","quantity":2}],"steps":["Top with milk.","Garnish with the grated nutmeg, orange peel, and cherries."]}]}]
-    return jsonify(s)
+    headers_only = request.args.get('headers_only', default=True)
+    tags = request.args.getlist('tag')
+
+    data = api.handlers.get_recipes(storage, headers_only, tags)
+    return jsonify(data)
+
+@ambrosia_api.route('/r', methods=['POST'])
+def add_recipe():
+    data = request.get_json()
+    rid = api.handlers.add_recipe(storage, data)
+    LOGGER.info("Added new recipe rid: %s" % rid)
+    return { 'rid': rid }, 201
+
+

@@ -16,10 +16,12 @@ LOGGER.setLevel(logging.INFO)
 ambrosia_api = Blueprint('ambrosia_api', __name__)
 storage = AmbrosiaStorage('mongodb://localhost:27017/', 'ambrosia', 'recipes')
 
+
 @ambrosia_api.errorhandler(Exception)
 def handle_unknown_errors(err):
-    data = { 'error': str(err) }
+    data = {'error': str(err)}
     return jsonify(data)
+
 
 @ambrosia_api.route('/recipes')
 def get_recipes():
@@ -29,11 +31,10 @@ def get_recipes():
     data = api.handlers.get_recipes(storage, headers_only, tags)
     return jsonify(data)
 
+
 @ambrosia_api.route('/r', methods=['POST'])
 def add_recipe():
     data = request.get_json()
     rid = api.handlers.add_recipe(storage, data)
     LOGGER.info("Added new recipe rid: %s" % rid)
-    return { 'rid': rid }, 201
-
-
+    return {'rid': rid}, 201

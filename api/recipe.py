@@ -1,4 +1,6 @@
-import re, string
+import re
+import string
+
 
 class Recipe:
     """The recipe class holds any business rules for recipe management
@@ -19,7 +21,7 @@ class Recipe:
 
         recipe_tag_name = Recipe.make_tag(recipe_name)
         tags.append(recipe_tag_name)
-        
+
         rid = Recipe.make_id(recipe_name)
         recipe_header['_id'] = rid
         recipe_header['tags'] = Recipe.sanitize_tags(tags)
@@ -66,4 +68,3 @@ class Recipe:
 
         recipe_name = recipe_name.lower().replace(' ', '_')
         return re.sub(r'\W+', '', recipe_name)
-

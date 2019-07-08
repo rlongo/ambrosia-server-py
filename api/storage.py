@@ -1,14 +1,15 @@
 from pymongo import MongoClient
 
+
 class AmbrosiaStorage:
     def __init__(self, db_uri, db_name, collection_name):
         assert isinstance(db_uri, str)
         assert isinstance(db_name, str)
         assert isinstance(collection_name, str)
-        
+
         self.mongo = MongoClient(db_uri)
-        self.db = self.mongo.ambrosia #[db_name]
-        self.collection = self.db.recipes #[collection_name]
+        self.db = self.mongo.ambrosia
+        self.collection = self.db.recipes
 
     def create_new_recipe(self, recipe):
         return self.collection.insert_one(recipe).inserted_id

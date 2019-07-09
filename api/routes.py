@@ -31,9 +31,21 @@ def get_recipes():
     return jsonify(data)
 
 
+@ambrosia_api.route('/r/<string:rid>')
+def get_recipe(rid=None):
+    data = api.handlers.get_recipe(storage, rid)
+    return jsonify(data)
+
 @ambrosia_api.route('/r', methods=['POST'])
 def add_recipe():
     data = request.get_json()
     rid = api.handlers.add_recipe(storage, data)
     LOGGER.info("Added new recipe rid: %s" % rid)
     return {'rid': rid}, 201
+
+@ambrosia_api.route('/r/<string:rid>/s', methods=['POST'])
+def add_stage(rid=None):
+    data = request.get_json()
+    sid = api.handlers.add_stage(storage, rid, data)
+    LOGGER.info("Added new recipe stage sid: %s" % sid)
+    return {'sid': sid}, 201

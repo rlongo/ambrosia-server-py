@@ -26,7 +26,9 @@ class AmbrosiaStorage:
     def get_recipe_headers(self, tags):
         headers = []
         tag_filter = AmbrosiaStorage._get_tags_query(tags)
-        for h in self.collection.find(tag_filter):
+        rid_filter = {'rid': { '$exists': True} }
+        f = {'$and': [ tag_filter, rid_filter ]}
+        for h in self.collection.find(f):
             h.pop('_id')
             headers.append(h)
 

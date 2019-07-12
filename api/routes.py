@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, abort, request
+from flask import Blueprint, jsonify, abort, request, redirect, url_for
 from api.storage import AmbrosiaStorage
 import api.handlers
 
@@ -30,11 +30,15 @@ def get_recipes():
     data = api.handlers.get_recipes(storage, tags)
     return jsonify(data)
 
-
 @ambrosia_api.route('/r/<string:rid>')
 def get_recipe(rid=None):
     data = api.handlers.get_recipe(storage, rid)
     return jsonify(data)
+
+@ambrosia_api.route('/r/<string:rid>/img', methods=['GET', 'POST'])
+def add_recipe_image(rid=None):
+    path = "%s/asset.jpg" % rid
+    return redirect(url_for('asset_server.assets_image', path=path), code=307)
 
 @ambrosia_api.route('/r', methods=['POST'])
 def add_recipe():
